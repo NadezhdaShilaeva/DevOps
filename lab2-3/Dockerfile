@@ -9,13 +9,12 @@ RUN pip install -r requirements.txt
 COPY src .
 
 # Запуск
-FROM python:3.8-slim
+FROM python:3.8-slim AS runner
 
-ARG USER_ID=777
-ARG GROUP_ID=777
+ARG GROUP_NAME=app_group
 ARG USER_NAME=app_user
 
-RUN groupadd --gid $GROUP_ID $USER_NAME && useradd --uid $USER_ID --gid $GROUP_ID -m $USER_NAME
+RUN addgroup -S $GROUP_NAME && adduser -S $USER_NAME -G $GROUP_NAME
 
 USER $USER_NAME
 

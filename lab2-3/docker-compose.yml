@@ -1,29 +1,28 @@
 version: "3.9"
 
 services:
-  postgres:
+  my-postgres:
     image: postgres:latest
-    container_name: postgres
+    container_name: my-postgres
+    hostname: postgres
     ports:
-      - 5432:5432
+      - 65432:5432
     environment:
       - POSTGRES_HOST_AUTH_METHOD=trust
-      - PGDATA=/data
+      - POSTGRES_DB=app_db
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=12345
-      - POSTGRES_DB=app_db
       - POSTGRES_PORT=5432
+      - PGDATA=/data
     volumes:
       - ./containers/postgres:/data
     restart: unless-stopped
 
-  api:
+  my-api:
     build:
       dockerfile: Dockerfile
-    container_name: api
-    depends_on: [postgres]
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+    container_name: my-api
+    depends_on: [ my-postgres ]
     ports:
-      - 5000:5000
+      - 8081:8081
     restart: unless-stopped
