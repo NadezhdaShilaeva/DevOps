@@ -23,10 +23,4 @@ WORKDIR /usr/src
 COPY --from=builder /usr/src /usr/src
 RUN pip install -r requirements.txt
 
-ENV DB_PORT=5432
-ENV DB_HOST=postgres
-ENV DB_NAME=app_db
-ENV DB_USER=postgres
-ENV DB_PASSWORD=12345
-
 CMD ["python", "app.py"]
