@@ -1,0 +1,13 @@
+ARG NODE_VERSION=18.6.0
+
+FROM node:$NODE_VERSION-alpine AS system
+
+ENV PROJECT_USER=nodeuser
+ENV PROJECT_GROUP=nodeuser
+
+RUN addgroup -S ${PROJECT_GROUP} && adduser -S ${PROJECT_USER} -G ${PROJECT_GROUP}
+
+WORKDIR /app
+
+RUN chown -R ${PROJECT_USER}:${PROJECT_GROUP} /app
+USER ${PROJECT_USER}
