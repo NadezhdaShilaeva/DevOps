@@ -1,0 +1,66 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: mysql_db
+    environment:
+      MYSQL_USER: ${MYSQL_DB_USER}
+      MYSQL_PASSWORD: ${MYSQL_DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE_NAME}
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - react-spring-network
+
+  backend:
+    container_name: my_backend
+    build:
+      context: ./spring-backend
+      dockerfile: Dockerfile
+    environment:
+      DB_HOST: ${MYSQL_DB_HOST}
+      MYSQL_PORT: ${MYSQL_DB_PORT}
+      MYSQL_DATABASE: ${MYSQL_DATABASE_NAME}
+      MYSQL_USER: ${MYSQL_DB_USER}
+      MYSQL_PASSWORD: ${MYSQL_DB_PASSWORD}
+    volumes:
+      - static-data:/app/static
+    depends_on:
+      - db
+    networks:
+      - react-spring-network
+
+  frontend:
+    container_name: my_frontend
+    build:
+      context: ./react-frontend
+      dockerfile: Dockerfile
+    depends_on: 
+      - backend
+    networks:
+      - react-spring-network
+
+  nginx-proxy:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+      args:
+        NGINX_USER: nginxuser
+        NGINX_PORT: 80
+    ports:
+      - "80:80"
+    user: nginxuser
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - frontend
+    networks:
+      - react-spring-network
+
+volumes:
+  db-data:
+  static-data:
+
+networks:
+  react-spring-network:
+    driver: bridge
