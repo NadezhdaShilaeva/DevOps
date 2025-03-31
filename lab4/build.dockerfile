@@ -1,11 +1,11 @@
 FROM my-system as build
 
-COPY *.json ./
+COPY ./app/*.json ./
 
 RUN npm install && npm cache clean --force
 
 ENV PROJECT_DIR=/app
 
-COPY . ${PROJECT_DIR}
+COPY ./app ${PROJECT_DIR}
 
 RUN npm run build
