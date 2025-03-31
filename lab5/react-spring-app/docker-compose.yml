@@ -11,11 +11,17 @@ services:
       - db-data:/var/lib/mysql
     networks:
       - react-spring-network
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
 
   backend:
     container_name: my_backend
     build:
-      context: ./spring-backend
+      context: https://github.com/NadezhdaShilaeva/DevOps-lab5-backend.git
       dockerfile: Dockerfile
     environment:
       DB_HOST: ${MYSQL_DB_HOST}
@@ -26,14 +32,15 @@ services:
     volumes:
       - static-data:/app/static
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     networks:
       - react-spring-network
 
   frontend:
     container_name: my_frontend
     build:
-      context: ./react-frontend
+      context: https://github.com/NadezhdaShilaeva/DevOps-lab5-frontend.git
       dockerfile: Dockerfile
     depends_on: 
       - backend

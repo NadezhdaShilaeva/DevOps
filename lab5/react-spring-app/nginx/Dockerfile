@@ -1,4 +1,5 @@
 FROM nginx:1.27.4-alpine
+
 ARG NGINX_USER=nginxuser
 ARG NGINX_PORT=80
 
