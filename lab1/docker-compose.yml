@@ -1,0 +1,11 @@
+version: "3.9"
+
+services:
+  mynginx:
+    ports:
+      - 8080:80
+    build: .
+    restart: unless-stopped
+    volumes:
+      - ./html:/var/www/html
+    user: nginx
